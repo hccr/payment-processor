@@ -1,0 +1,75 @@
+buildscript {
+    ext{
+        pitestVer = '1.5.2'
+        pitestCliVer = '1.7.0'
+        pitestJUnit5Ver = '0.15'
+        googleJavaFormatVersion = '0.9'
+    }
+
+}
+
+plugins {
+    id 'java'
+    id 'application'
+    id 'idea'
+    id 'org.springframework.boot' version '2.6.3'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'info.solidsoft.pitest' version "${pitestVer}"
+    id 'com.github.sherter.google-java-format' version "${googleJavaFormatVersion}"
+}
+
+group = 'cl.hccr'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '11'
+
+configurations {
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.kafka:spring-kafka'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign:3.1.0'
+    implementation 'org.projectlombok:lombok'
+
+
+    runtimeOnly 'org.postgresql:postgresql'
+    annotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.springframework.kafka:spring-kafka-test'
+
+    pitest("org.pitest:pitest-junit5-plugin:${pitestJUnit5Ver}")
+    pitest("org.pitest:pitest-command-line:${pitestCliVer}")
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+pitest {
+    pitestVersion = "${pitestVer}"
+    testPlugin = "junit5"
+    targetClasses = ['cl.hccr.paymentprocessor.*']
+    excludedClasses = ['cl.hccr.paymentprocessor.exception.*',
+                       'cl.hccr.paymentprocessor.repository.model.*',
+                       'cl.hccr.paymentprocessor.service.dto.*',
+                       'cl.hccr.paymentprocessor.client.dto.*',
+                       'cl.hccr.paymentprocessor.PaymentProcessorApplication']
+    outputFormats = ['XML', 'HTML']
+    mutationThreshold = 100
+    coverageThreshold = 100
+    reportDir = 'build/reports/mutation-tests-results' as File
+    timestampedReports = false
+    failWhenNoMutations = true
+    historyInputLocation = 'build/history.pitest'
+    historyOutputLocation = 'build/history.pitest'
+    verbose = false
+}

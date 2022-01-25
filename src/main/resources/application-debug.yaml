@@ -1,0 +1,6 @@
+
+logging:
+  level:
+    cl:
+      hccr:
+        paymentprocessor: debug #Change to debug to see details
