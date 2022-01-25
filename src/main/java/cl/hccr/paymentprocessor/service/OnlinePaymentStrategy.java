@@ -7,12 +7,20 @@ import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * The Online implementation of {@link PaymentStrategy}
+ */
 @Service(value = "online")
 @RequiredArgsConstructor
 public class OnlinePaymentStrategy implements PaymentStrategy {
   private final PaymentGatewayClient paymentGatewayClient;
   private final StorePaymentService storePaymentService;
 
+
+  /**
+   * Process an Online payment.
+   * @param paymentMessage a Online Payment Message
+   */
   @Override
   public void process(PaymentMessage paymentMessage) {
     validatePayment(paymentMessage);

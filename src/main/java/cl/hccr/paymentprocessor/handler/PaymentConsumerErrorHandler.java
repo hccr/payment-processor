@@ -14,6 +14,9 @@ import org.springframework.kafka.listener.ListenerExecutionFailedException;
 import org.springframework.messaging.Message;
 import org.springframework.stereotype.Component;
 
+/**
+ * This class implements {@link KafkaListenerErrorHandler} to handle any error arise processing messages.
+ */
 @Component
 @RequiredArgsConstructor
 @Slf4j
@@ -22,6 +25,13 @@ public class PaymentConsumerErrorHandler implements KafkaListenerErrorHandler {
   private final LogSystemClient logSystemClient;
   private final ObjectMapper objectMapper;
 
+  /**
+   * t handles any error that arose processing Kafka messages. For every error handled it will try to post the log through {@link LogSystemClient}.
+   * It determines the root cause of the error and configure a corresponding {@link LogMessageDto}
+   * @param message a Kafka message to handle.
+   * @param exception the thrown exception
+   * @return null
+   */
   @Override
   public Object handleError(Message<?> message, ListenerExecutionFailedException exception) {
     var paymentId = retrievePaymentId(message);
@@ -50,6 +60,13 @@ public class PaymentConsumerErrorHandler implements KafkaListenerErrorHandler {
     return null;
   }
 
+  /**
+   * Retrieve the payment id from a raw message {@link Message}.
+   * It assumes a json structure and try to deserialize using {@link ObjectMapper}.
+   * If an error arise, then return {@literal UNKNOWN_ID}
+   * @param message to read from.
+   * @return a payment id or {@literal UNKNOWN_ID}
+   */
   private String retrievePaymentId(Message<?> message) {
     try {
       if (message.getPayload() instanceof String) {

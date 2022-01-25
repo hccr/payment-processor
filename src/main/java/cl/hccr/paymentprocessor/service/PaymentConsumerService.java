@@ -8,12 +8,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
 
+/**
+ * A Kafka consumer using {@link KafkaListener} annotation.
+ */
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class PaymentConsumerService {
   private final PaymentStrategyManager paymentStrategyManager;
   private final ObjectMapper objectMapper;
+
+  /**
+   * Process messages from online and offline topics.
+   * @param paymentMessage a json string representation of {@link PaymentMessage}, this payment message could be online or offline
+   * @throws JsonProcessingException trying to convert the String message into a PaymentMessage
+   */
 
   @KafkaListener(
       topics = {"online", "offline"},

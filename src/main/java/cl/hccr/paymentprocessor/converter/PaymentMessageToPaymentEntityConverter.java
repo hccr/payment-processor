@@ -8,6 +8,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class PaymentMessageToPaymentEntityConverter
     implements Converter<PaymentMessage, PaymentEntity> {
+
+  /**
+   * Convert PaymentMessage into PaymentEntity.
+   * @param source a payment message
+   * @return a payment entity
+   */
+
   @Override
   public PaymentEntity convert(PaymentMessage source) {
 
