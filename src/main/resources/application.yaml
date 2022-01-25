@@ -1,0 +1,36 @@
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: localhost:29092
+      group-id: "payment-processor-id"
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  jpa:
+    hibernate:
+      ddl-auto: none
+  datasource:
+    driverClassName: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/payments
+    username: tech
+    password: test
+
+
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: full
+
+
+external-services:
+  payment-gateway:
+    url: "localhost:9000"
+  log-system:
+    url: "localhost:9000"
+
+logging:
+  level:
+    cl:
+      hccr:
+        paymentprocessor: info #Change to debug to see details
